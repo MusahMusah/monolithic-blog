@@ -62,12 +62,6 @@ The application is built with RESTful API endpoints. No frontend is built due to
 ## Discussion
 This section contains justifications and improvements that should be made.
 
-### Why Django
-Oh well, Django is a favourite framework of mine and while I could have used Flask or something else, it's quite easy to set up a Django application and structure your application in a way that it can actually scale in production, as long as structure is concerned.
-
-### Choice of Database
-I choose Redis for the purpose of caching requests. Since Pokemon information doesn't and rarely changes, once a user has requested for an info, it can as well be cached to reduce network calls subsequently. This improves speed of the application
-
 ### Improvements for a production API
 - Write tests with attention to non-framework specific features.
 

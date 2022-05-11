@@ -19,8 +19,16 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'use
     Route::get('/', [UserController::class, '__invoke'])->name('me'),
     Route::post('/create-post', [PostController::class, 'createPost'])
             ->name('create-post'),
-    Route::get('/posts', [PostController::class, 'getPosts'])
-                ->name('posts'),
+    Route::get('/posts', [PostController::class, 'getUserPosts'])
+        ->name('posts'),
+]);
+
+/**
+ * OTHER ROUTES
+ */
+Route::group(['middleware' => ['auth:sanctum']], fn () => [
+    Route::get('/posts/all', [PostController::class, 'getPosts'])
+        ->name('posts.all'),
 ]);
 
 

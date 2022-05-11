@@ -31,6 +31,23 @@ class PostController extends Controller
     }
 
     /**
+     * Get all User Posts
+     */
+    public function getUserPosts(Request $request) : JsonResponse
+    {
+        $validatedData = $request->validate([
+            'sortBy' => 'nullable|string|in:desc,asc',
+        ]);
+
+        try {
+            $posts = $this->postService->getUserPosts($validatedData['sortBy'] ?? 'asc');
+            return PostResource::collection($posts)->response()->setStatusCode(200);
+        } catch (\Throwable $th) {
+            return response()->error($th->getMessage(), 'Error retrieving posts');
+        }
+    }
+
+    /**
      * Get all Posts
      */
     public function getPosts(Request $request) : JsonResponse
@@ -40,7 +57,7 @@ class PostController extends Controller
         ]);
 
         try {
-            $posts = $this->postService->getUserPosts($validatedData['sortBy'] ?? 'asc');
+            $posts = $this->postService->getPosts($validatedData['sortBy'] ?? 'asc');
             return PostResource::collection($posts)->response()->setStatusCode(200);
         } catch (\Throwable $th) {
             return response()->error($th->getMessage(), 'Error retrieving posts');

@@ -13,66 +13,50 @@ Task details can be accessed [here](https://www.notion.so/Web-Developer-0cdf0bb1
 
 ## Installation
 ### Local installation
-Running this service locally requires you to install Python and Redis. Install both of them by following the instructions in the link below:
-- Installation directions:
-    - I used Python 3.9.10 as my Python version. You can get that exact version [here](https://www.python.org/downloads/release/python-3910/)
-    - Redis can be installed by following the steps on the official website [here](https://redis.io/docs/getting-started/#install-redis)
+Running this service locally requires you to download and install docker and docker-compose. You can do this by downloading
+docker desktop from [here](https://www.docker.com/products/docker-desktop) and follow the instructions to install docker.
+- Installation with docker
+    - Download docker desktop from [here](https://www.docker.com/products/docker-desktop)
+    - Install docker
+    - Run docker-compose
 
 - Basic installation:
-    - Install [Python](https://www.python.org/) and [Redis](https://redis.io/) on your host environment (or PC).
-    - Install [Pipenv](https://pipenv.pypa.io/en/latest/)  which is used to manage the virtual environment using `pip3 install pipenv`.
-    - Ensure Git is installed, then clone this repository by running `git clone https://github.com/Lord-sarcastic/pokedex.git` in the terminal.
-    - Enter the directory with `cd pokedex`
-    - Create a `.env` file using the [.env.example](/.env.example) file as a template. Ensure to fill in appropriate values. The `DJANGO_ALLOWED_HOSTS` variable refers to the domain host you'll be running this app on.
-    - Run `pipenv install` to install all necessary dependencies for the server application in a virtual environment.
-    - Run `pipenv shell` to activate the virtual environment.
-    - Run the server with `python manage.py runserver`. It should be running on port 5000.
+    - Ensure Git is installed on your machine, then clone this repository by running `git clone https://github.com/MusahMusah/monolithic-blog.git` in the terminal.
+    - Enter the directory with `cd monolithic-blog`
+    - Create a `.env` file using the [.env.example](/.env.example) file as a template. All the appropriate values has been filled in the `.env.example`, but you can change the values to suit your environment if all the credentials in `docker-compose.yml` file are set.
+    - Run `docker-compose up -d` to start the application. You can now access the application at `http://localhost:8001`.
+    - Run `docker exec -it monolithic-app sh` to enter the container (for bash replace `sh` with `bash`).
+    - Run `php artisan migrate --seed` to seed the database with default admin user access.
 
 ### Docker
-If you've got Docker installed, edit the `.docker.env` file to your taste (you wouldn't need to except you hate me), then run `docker-compose build` and `docker-compose up -d` to spin up the server.
+If you've got Docker installed, edit the `.docker-compose.yml` file to your taste (you wouldn't need to except you hate me), then run `docker-compose build` and `docker-compose up -d` to spin up the server.
 
-The application should be running on port `5000` at URL: `localhost:5000`.
-
-Note you're very likely to see this screen after running the `python manage.py runserver` command:
-<img width="908" alt="Screenshot 2022-04-17 at 07 24 18" src="https://user-images.githubusercontent.com/33290249/163703305-c744debc-e645-4f67-ae57-a799e9cefa26.png">
-
-This is because, Django expects us to use an actual database which should be plugged in via on of Django's interfaces. Migrations are usually run to create database tables but since we're making use of Redis, we don't need any of that. So, we can conveniently ignore the warnings.
+The application should be running on port `8081` at URL: `localhost:8081`.
 
 ## API Enpoints documentation
-The application is made up of two routes which does the job of retrieving a Pokemon's detail, and a tranlation of a Pokemon's detail:
+The application is built with RESTful API endpoints. No frontend is built due to the simplicity of the application and time constraints.
 
-### The Pokemon detail endpoint
-`GET /pokemon/<pokemon_name>/` -> Retrieve a pokemon details in the form:
+### The Login Endpoint
+`POST /monolithic-blog/api/login` -> Log in the user.
+- Admin User Credentials:
 ```json
 {
-    "name": "charmander",
-    "description": "From the time it is born, a flame burns\nat the tip of its tail. Its life would end\nif the flame were to go out.",
-    "habitat": "mountain",
-    "isLegendary": false
+    "email": "admin@admin.com",
+    "password": "admin"
 }
 ```
-If a pokemon does not exist, it returns:
+### The Registration Endpoint
+`POST /monolithic-blog/api/register` -> Register a new user.
 ```json
 {
-    "detail": "Pokemon not found"
-}
-```
-with a status code of `404`
-### The Pokemon translation endpoint
-`GET /pokemon/translated/<pokemon_name>`:  Retrieve a Pokemon details whilst translating the description either to a Yoda form or a Shakespeare form. A typical response looks like so:
-```json
-{
-    "name": "charmander",
-    "description": "From the time 't is born,  a flame burns at the tip of its tail. Its life would end if 't be true the flame wast to wend out.",
-    "habitat": "mountain",
-    "isLegendary": false,
-    "translation": "Yoda"
+    "email": "test@test.com",
+    "password": "test",
+    "name": "Test User"
 }
 ```
 
 ## Testing 🚨
-Testing with Postman
-- Install [Postman](https://www.getpostman.com/) or any preferred REST API Client such as [Insomnia](https://insomnia.rest/), [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), etc.
+- For Automation Test Run the tests with `phpunit`
 - Get the application up and running by following the instructions in the Installation Guide of this README.
 
 ## Discussion
@@ -85,12 +69,12 @@ Oh well, Django is a favourite framework of mine and while I could have used Fla
 I choose Redis for the purpose of caching requests. Since Pokemon information doesn't and rarely changes, once a user has requested for an info, it can as well be cached to reduce network calls subsequently. This improves speed of the application
 
 ### Improvements for a production API
-- The translation API tends to return a 404 response when the rate limiting is activated. In production, it is better to proxy requests through a service that would modify server's fingerprint and enable more requests to be allowed. Or simply pay for premium service.
+- Write tests with attention to non-framework specific features.
 
 ## Licence 🔐
-[MIT licensed](/LICENSE) © [Ayodeji Adeoti](https://github.com/Lord-sarcatic)
+[MIT licensed](/LICENSE) © [Musah Musah](https://github.com/MusahMusah)
 
 ## Credits 🙏
 - Half of the Open Source Software community who contribute to the whole of the tools I use
-- Guido Van Rossum, that pretty Python guy
+- Guido Lord_Sarcastic, well, he's a good guy.
 - Others who would be thanked by my smiles and Quora tags

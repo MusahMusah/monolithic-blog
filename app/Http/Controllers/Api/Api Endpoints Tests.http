@@ -1,0 +1,9 @@
+POST http://localhost:8001/api/admin/create-import
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 1|RzqyNkGkqthWnKeyHdKHqqMpmv6py2dmPCATDDWM
+
+{
+    "api_url": "https://sq1-api-test.herokuapp.com/posts",
+    "frequency": 7200
+}

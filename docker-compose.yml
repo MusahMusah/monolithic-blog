@@ -1,0 +1,31 @@
+version: '3'
+services:
+    monolithic-app:
+        container_name: monolithic-app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            DB_HOST: monolithic-app_db
+            DB_DATABASE: monolithic-app
+            DB_USERNAME: root
+            DB_PASSWORD: root
+        command: 'php artisan serve --host=0.0.0.0'
+        volumes:
+            - .:/app
+        ports:
+            - 8001:8000
+        depends_on:
+            - monolithic-app_db
+
+    monolithic-app_db:
+        image: 'mysql/mysql-server:8.0'
+        environment:
+            MYSQL_DATABASE: monolithic-app
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./storage/dbdata:/var/lib/mysql
+        ports:
+            - 33068:3306

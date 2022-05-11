@@ -8,6 +8,7 @@ use App\Http\Resources\PostResource;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
@@ -24,7 +25,7 @@ class PostController extends Controller
     {
         try {
             $post = $this->postService->createPost($request->validated());
-            return response()->success($post, 'Post created successfully');
+            return response()->success($post, 'Post created successfully', Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             return response()->error($th->getMessage(), 'Error creating post');
         }

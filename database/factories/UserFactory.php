@@ -19,6 +19,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'id' => $this->faker->uuid,
             'name' => 'Admin User',
             'email' => 'admin@admin.com',
             'is_admin' => true,

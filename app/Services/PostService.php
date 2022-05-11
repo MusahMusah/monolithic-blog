@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class PostService
@@ -20,10 +21,25 @@ class PostService
     }
 
     // Get single user post
-    public function getUserPosts(string $sortBy) : Model
+    public function getUserPosts(string $sortBy)
     {
         // fetch all user post and sort by publication_date
-        return auth()->user()->posts()->orderBy('publication_date', $sortBy)->get();
+//        return auth()->user()->posts()->orderBy('publication_date', $sortBy)->get();
+
+        return \Cache::remember('posts', 60 * 30, function () use ($sortBy) {
+            return auth()->user()->posts()->orderBy('publication_date', $sortBy)->get();
+        });
+    }
+
+    // Get all posts
+    public function getPosts(string $sortBy)
+    {
+        // fetch all posts and sort by publication_date
+        return \Cache::remember('posts', 60 * 30, function () use ($sortBy) {
+            return Post::query()
+                ->orderBy('publication_date', $sortBy)
+                ->get();
+        });
     }
 
     // Create multiple posts for admin user

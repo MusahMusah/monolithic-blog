@@ -1,64 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+This blog platform, built with PHP/Laravel, it allows users to register, login and create blog posts.
+Admin User can import posts from other blogs by providing the blog's REST API URL, and the frequency of import.
+Cron job / scheduler runs every minute to import posts from other blogs.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Task details can be accessed [here](https://www.notion.so/Web-Developer-0cdf0bb1015d4e5c94b62b3fe61ee621).
 
-## About Laravel
+## Technologies used
+- Server application:
+    - [Laravel](https://laravel.com/), A PHP web framework with focus on speed of development and perfectionism
+    - [Docker](https://www.docker.com/), A set of platform as a service products that use OS-level virtualization to deliver software in packages called containers.
+    - [Redis](https://redis.io/), in-memory data store which can be used as a database, cache, streaming engine, and message broker.
+    - [Postman](https://www.getpostman.com/), a complete API development environment, and flexibly integrates with the software development cycle for API testing.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
+### Local installation
+Running this service locally requires you to install Python and Redis. Install both of them by following the instructions in the link below:
+- Installation directions:
+    - I used Python 3.9.10 as my Python version. You can get that exact version [here](https://www.python.org/downloads/release/python-3910/)
+    - Redis can be installed by following the steps on the official website [here](https://redis.io/docs/getting-started/#install-redis)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Basic installation:
+    - Install [Python](https://www.python.org/) and [Redis](https://redis.io/) on your host environment (or PC).
+    - Install [Pipenv](https://pipenv.pypa.io/en/latest/)  which is used to manage the virtual environment using `pip3 install pipenv`.
+    - Ensure Git is installed, then clone this repository by running `git clone https://github.com/Lord-sarcastic/pokedex.git` in the terminal.
+    - Enter the directory with `cd pokedex`
+    - Create a `.env` file using the [.env.example](/.env.example) file as a template. Ensure to fill in appropriate values. The `DJANGO_ALLOWED_HOSTS` variable refers to the domain host you'll be running this app on.
+    - Run `pipenv install` to install all necessary dependencies for the server application in a virtual environment.
+    - Run `pipenv shell` to activate the virtual environment.
+    - Run the server with `python manage.py runserver`. It should be running on port 5000.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Docker
+If you've got Docker installed, edit the `.docker.env` file to your taste (you wouldn't need to except you hate me), then run `docker-compose build` and `docker-compose up -d` to spin up the server.
 
-## Learning Laravel
+The application should be running on port `5000` at URL: `localhost:5000`.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Note you're very likely to see this screen after running the `python manage.py runserver` command:
+<img width="908" alt="Screenshot 2022-04-17 at 07 24 18" src="https://user-images.githubusercontent.com/33290249/163703305-c744debc-e645-4f67-ae57-a799e9cefa26.png">
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This is because, Django expects us to use an actual database which should be plugged in via on of Django's interfaces. Migrations are usually run to create database tables but since we're making use of Redis, we don't need any of that. So, we can conveniently ignore the warnings.
 
-## Laravel Sponsors
+## API Enpoints documentation
+The application is made up of two routes which does the job of retrieving a Pokemon's detail, and a tranlation of a Pokemon's detail:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### The Pokemon detail endpoint
+`GET /pokemon/<pokemon_name>/` -> Retrieve a pokemon details in the form:
+```json
+{
+    "name": "charmander",
+    "description": "From the time it is born, a flame burns\nat the tip of its tail. Its life would end\nif the flame were to go out.",
+    "habitat": "mountain",
+    "isLegendary": false
+}
+```
+If a pokemon does not exist, it returns:
+```json
+{
+    "detail": "Pokemon not found"
+}
+```
+with a status code of `404`
+### The Pokemon translation endpoint
+`GET /pokemon/translated/<pokemon_name>`:  Retrieve a Pokemon details whilst translating the description either to a Yoda form or a Shakespeare form. A typical response looks like so:
+```json
+{
+    "name": "charmander",
+    "description": "From the time 't is born,  a flame burns at the tip of its tail. Its life would end if 't be true the flame wast to wend out.",
+    "habitat": "mountain",
+    "isLegendary": false,
+    "translation": "Yoda"
+}
+```
 
-### Premium Partners
+## Testing 🚨
+Testing with Postman
+- Install [Postman](https://www.getpostman.com/) or any preferred REST API Client such as [Insomnia](https://insomnia.rest/), [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), etc.
+- Get the application up and running by following the instructions in the Installation Guide of this README.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Discussion
+This section contains justifications and improvements that should be made.
 
-## Contributing
+### Why Django
+Oh well, Django is a favourite framework of mine and while I could have used Flask or something else, it's quite easy to set up a Django application and structure your application in a way that it can actually scale in production, as long as structure is concerned.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Choice of Database
+I choose Redis for the purpose of caching requests. Since Pokemon information doesn't and rarely changes, once a user has requested for an info, it can as well be cached to reduce network calls subsequently. This improves speed of the application
 
-## Code of Conduct
+### Improvements for a production API
+- The translation API tends to return a 404 response when the rate limiting is activated. In production, it is better to proxy requests through a service that would modify server's fingerprint and enable more requests to be allowed. Or simply pay for premium service.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Licence 🔐
+[MIT licensed](/LICENSE) © [Ayodeji Adeoti](https://github.com/Lord-sarcatic)
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Credits 🙏
+- Half of the Open Source Software community who contribute to the whole of the tools I use
+- Guido Van Rossum, that pretty Python guy
+- Others who would be thanked by my smiles and Quora tags

@@ -26,10 +26,8 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'use
 /**
  * OTHER ROUTES
  */
-Route::group(['middleware' => ['auth:sanctum']], fn () => [
-    Route::get('/posts/all', [PostController::class, 'getPosts'])
-        ->name('posts.all'),
-]);
+Route::get('/posts/all', [PostController::class, 'getPosts'])
+    ->name('posts.all');
 
 
 /**
